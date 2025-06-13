@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Lluvia de TE AMO</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: black;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    canvas {
+      display: block;
+    }
+
+    .mensaje {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #ff69b4;
+      font-size: 40px;
+      text-align: center;
+      z-index: 1;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px black;
+    }
+
+    .emoji {
+      position: absolute;
+      font-size: 24px;
+      animation: flotar 10s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes flotar {
+      0% {
+        transform: translateX(-100px);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(110vw);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="mensaje">Volvamos a intentarlo<br>Mi Lizeth hermosa</div>
+  <canvas id="canvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    function ajustarTamañoCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    ajustarTamañoCanvas();
+
+    const phrase = "TE AMO ";
+    const fontSize = 16;
+    let columns, drops;
+
+    function inicializarLluvia() {
+      columns = Math.floor(canvas.width / fontSize);
+      drops = Array(columns).fill(1);
+    }
+
+    inicializarLluvia();
+
+    function draw() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "#ff69b4";
+      ctx.font = fontSize + "px Arial";
+
+      for (let i = 0; i < drops.length; i++) {
+        ctx.fillText(phrase, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+
+        drops[i]++;
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    draw();
+
+    // Redimensionar ventana
+    window.addEventListener('resize', () => {
+      ajustarTamañoCanvas();
+      inicializarLluvia();
+    });
+
+    // 💌 Agregar emojis flotantes
+    function crearEmojiFlotante() {
+      const emoji = document.createElement('div');
+      emoji.classList.add('emoji');
+      emoji.textContent = '💌';
+
+      const topPos = Math.random() * window.innerHeight;
+      emoji.style.top = `${topPos}px`;
+
+      const duracion = 6 + Math.random() * 6;
+      emoji.style.animationDuration = `${duracion}s`;
+
+      document.body.appendChild(emoji);
+
+      setTimeout(() => {
+        emoji.remove();
+      }, duracion * 1000);
+    }
+
+    // Crear muchos emojis cada poco tiempo
+    setInterval(() => {
+      crearEmojiFlotante();
+    }, 400); // cada 400 milisegundos
+
+  </script>
+</body>
+</html>
